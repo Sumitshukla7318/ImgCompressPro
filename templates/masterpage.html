@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Compressor</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f9f9f9;
+        }
+
+        .upload-section {
+            background-color: #e6efff;
+            border: 2px dashed #007bff;
+            border-radius: 10px;
+            padding: 50px 20px;
+            text-align: center;
+            margin: 20px auto;
+            max-width: 600px;
+        }
+
+        .upload-section i {
+            font-size: 10px;
+            color: #007bff;
+        }
+
+        .compression-settings {
+            background-color: #e6efff;
+            border-radius: 10px;
+            padding: 20px;
+            max-width: 600px;
+            margin: 20px auto;
+        }
+
+        .compression-settings h4 {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Image Tools</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse ms-5" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#"><i class="fas fa-compress"></i> Image Compressor</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-image"></i> Image Resizer</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-crop"></i> Crop Image</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-ellipsis-h"></i> More</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    {% block 'compress' %}{% endblock 'compress' %}
+
+
+
+    <script>
+        document.getElementById("uploadBtn").addEventListener("click", function () {
+            var uploadForm = document.getElementById("uploadForm");
+            var settingsForm = document.getElementById("settingsForm");
+
+            
+            if (uploadForm.images.files.length === 0) {
+                alert("Please select at least one image.");
+                return;
+            }
+
+           
+            // First submit the settings form (if needed for GET data like compression settings)
+            settingsForm.submit(); 
+
+            // Then submit the upload form
+            uploadForm.submit();
+        });
+    </script>
+
+
+    </script>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+</body>
+
+</html>

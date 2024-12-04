@@ -1,0 +1,35 @@
+{% extends "masterpage.html" %}
+
+{% block 'compress' %}
+<!-- Image Upload Section -->
+<div class="upload-section">
+    <form id="uploadForm" action="{% url 'upload' %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <i class="fas fa-image"></i>
+        <h3>Select Images</h3>
+        <p>or, drag and drop images here</p>
+        <input type="file" name="images" class="form-control" multiple>
+        <button type="button" id="uploadBtn" class="btn btn-primary mt-3">
+            <i class="fas fa-upload"></i> Upload Images
+        </button>
+    </form>
+</div>
+
+<!-- Compression Settings Section -->
+<div class="compression-settings">
+    <h4>Compression Settings (optional)</h4>
+    <form id="settingsForm" action="{% url 'upload' %}" method="GET">
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="compressionOption" id="maxSizeOption">
+            <label class="form-check-label" for="maxSizeOption">Max File Size (KB)</label>
+            <input type="number" class="form-control mt-1" name="max_size_value" placeholder="Enter Max File Size">
+        </div>
+        <div class="form-check mt-3">
+            <input class="form-check-input" type="radio" name="compressionOption" id="qualityOption">
+            <label class="form-check-label" for="qualityOption">Quality</label>
+            <input type="number" class="form-control mt-1" name="quality_value" placeholder="Enter Quality (1-100)">
+        </div>
+    </form>
+</div>
+
+{% endblock 'compress' %}
