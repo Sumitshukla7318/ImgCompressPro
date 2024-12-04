@@ -77,32 +77,52 @@
 
 
     {% block 'compress' %}{% endblock 'compress' %}
+    {% block 'sucess' %}{% endblock 'sucess' %}
 
 
+<script>
+    document.getElementById("uploadBtn").addEventListener("click", function () {
+        var uploadForm = document.getElementById("uploadForm");
+        var settingsForm = document.getElementById("settingsForm");
+    
+        // Check if at least one file is selected
+        if (uploadForm.images.files.length === 0) {
+            alert("Please select at least one image.");
+            return;
+        }
+    
+        // Set the compression settings in the upload form before submitting
+        var compressionOption = document.querySelector('input[name="compressionOption"]:checked');
+        var maxSize = document.querySelector('input[name="max_size_value"]').value;
+        var quality = document.querySelector('input[name="quality_value"]').value;
+    
+        // Add the settings data to the upload form
+        if (compressionOption) {
+            uploadForm.appendChild(createHiddenInput('compressionOption', compressionOption.value));
+        }
+        if (maxSize) {
+            uploadForm.appendChild(createHiddenInput('max_size_value', maxSize));
+        }
+        if (quality) {
+            uploadForm.appendChild(createHiddenInput('quality_value', quality));
+        }
+    
+        // Submit the upload form with all data
+        uploadForm.submit();
+    });
+    
+    // Helper function to create hidden input
+    function createHiddenInput(name, value) {
+        var input = document.createElement("input");
+        input.type = "hidden";
+        input.name = name;
+        input.value = value;
+        return input;
+    }
+    
 
-    <script>
-        document.getElementById("uploadBtn").addEventListener("click", function () {
-            var uploadForm = document.getElementById("uploadForm");
-            var settingsForm = document.getElementById("settingsForm");
-
-            
-            if (uploadForm.images.files.length === 0) {
-                alert("Please select at least one image.");
-                return;
-            }
-
-           
-            // First submit the settings form (if needed for GET data like compression settings)
-            settingsForm.submit(); 
-
-            // Then submit the upload form
-            uploadForm.submit();
-        });
     </script>
-
-
-    </script>
-    <!-- Bootstrap JS and dependencies -->
+    
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 </body>

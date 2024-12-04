@@ -1,6 +1,53 @@
 {% extends "masterpage.html" %}
 
+{% block 'sucess' %}
+<div class="container text-center mt-5">
+    <!-- Success Card -->
+    <div class="card shadow-lg border-0 rounded">
+        <div class="card-body">
+            <!-- Success Message -->
+            <h1 class="text-success">🎉 Image Compressed Successfully!</h1>
+            <p class="text-muted">Below you can see both the original and compressed images, and download the compressed version.</p>
+            
+            <!-- Image Comparison Section -->
+            <div class="row justify-content-center mt-4">
+                <!-- Original Image -->
+                <div class="col-md-5">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-warning text-white">
+                            <strong>Original Image</strong>
+                        </div>
+                        <div class="card-body p-2">
+                            <img src="{{oldpath}}" alt="Original Image" class="img-fluid rounded" 
+                                style="max-width: 100%; object-fit: cover;">
+                        </div>
+                    </div>
+                </div>
 
-    <h1>Image compressed sucessfully</h1>
-    <img src="{{filepath}}" alt="Server Issue">
-    <a href="/">Upload Another</a>
+                <!-- Compressed Image -->
+                <div class="col-md-5">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-success text-white">
+                            <strong>Compressed Image</strong>
+                        </div>
+                        <div class="card-body p-2">
+                            <img src="{{ filepath }}" alt="Compressed Image" class="img-fluid rounded" 
+                                style="max-width: 100%; object-fit: cover;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="mt-4">
+                <a href="{{ filepath }}" class="btn btn-success btn-lg shadow" download>
+                    <i class="fas fa-download"></i> Download Compressed Image
+                </a>
+                <a href="/" class="btn btn-secondary btn-lg shadow">
+                    <i class="fas fa-upload"></i> Upload Another Image
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock 'sucess' %}

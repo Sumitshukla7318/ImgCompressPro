@@ -32,21 +32,90 @@ class Image_compressor_view(View):
         max_size=request.POST.get('max_size_value')
         quality=request.POST.get('quality_value')
 
-        print("======>",max_size,quality,compression_option)
+        
+        if max_size:
+            compressed_path=self.compress_by_size(obj.image,max_size)
+        elif quality:
+            compressed_path=self.compress_by_quality(obj.image,quality)
+        else:
+            compressed_path=self.compress(obj.image)
+        
 
 
         
         # compressed_path = self.compress(obj.image)
-        # if compressed_path:
-        #     obj.compressed_image.save(
-        #         os.path.basename(compressed_path),
-        #         open(compressed_path, 'rb')
-        #     )
-        #     obj.save()
-        #     return render(request, "sucess.html", {'filepath': obj.compressed_image.url})
+        if compressed_path:
+            obj.compressed_image.save(
+                os.path.basename(compressed_path),
+                open(compressed_path, 'rb')
+            )
+            obj.save()
+            return render(request, "sucess.html", {'filepath': obj.compressed_image.url,'oldpath':obj.image.url})
         return HttpResponse("<h1>Error</h1>")
 
        
+    def compress_by_size(self,imagefield,max_size):
+        try:
+            original_image_path=imagefield.path
+            compressed_dir = os.path.join(settings.MEDIA_ROOT, 'compressed')
+            os.makedirs(compressed_dir, exist_ok=True)
+            compressed_image_path = os.path.join(compressed_dir, os.path.basename(original_image_path))
+
+            img=Image.open(original_image_path)
+            format=img.format
+            max_size=int(max_size)*1024
+
+            quality=85
+            step=5
+            while True:
+                if format in ['JPEG', 'JPG']:
+                    img.save(compressed_image_path,'JPEG',quality=quality,optimize=True)
+                elif format=='PNG':
+                    img.save(compressed_image_path,"PNG",optimize=True,compress_level=int(9 - (quality / 100) * 9))
+                elif format=="GIF":
+                    img.save(compressed_image_path,"GIF",save_all=True,optimize=True)
+                else:
+                    raise ValueError(f"unsoported format {format}")
+                
+                if os.path.getsize(compressed_image_path)<=max_size or quality<=10:
+                    break
+                quality-=step
+            return compressed_image_path
+        except Exception as e:
+            print("error=>",e)
+            return None
+        
+    
+    def compress_by_quality(self,imagefield,quality):
+        try:
+            original_image_path=imagefield.path
+            compressed_dir = os.path.join(settings.MEDIA_ROOT, 'compressed')
+            os.makedirs(compressed_dir, exist_ok=True)
+            compressed_image_path = os.path.join(compressed_dir, os.path.basename(original_image_path))
+            
+            img=Image.open(original_image_path)
+            frmt=img.format
+
+            quality=int(quality)
+
+            if frmt in ['JPEG', 'JPG']:
+                img.save(compressed_image_path, 'JPEG', quality=quality, optimize=True)
+            elif frmt =='PNG':
+                img.save(compressed_image_path, 'PNG', optimize=True, compress_level=9)
+            elif frmt =='GIF':
+                img.save(compressed_image_path, 'GIF', save_all=True, optimize=True)
+            else:
+                raise ValueError(f"unsoported format {format}")
+            
+            return compressed_image_path
+        
+        except Exception as e:
+            print("error",e)
+            return None
+            
+
+                 
+
     def compress(self, image_field):
         try:
             original_image_path = image_field.path
