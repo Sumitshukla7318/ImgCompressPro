@@ -62,7 +62,7 @@
                         <a class="nav-link active" href="#"><i class="fas fa-compress"></i> Image Compressor</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fas fa-image"></i> Image Resizer</a>
+                        <a class="nav-link" href="{% url 'resizer' %}"><i class="fas fa-image"></i> Image Resizer</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#"><i class="fas fa-crop"></i> Crop Image</a>
@@ -78,6 +78,7 @@
 
     {% block 'compress' %}{% endblock 'compress' %}
     {% block 'sucess' %}{% endblock 'sucess' %}
+    {% block 'resizer' %}{% endblock 'resizer' %}
 
 
 <script>

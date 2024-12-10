@@ -144,18 +144,74 @@ class Image_compressor_view(View):
 
 
 class Image_Resizer_view(View):
-    def get():
-        pass
-    def post():
-        pass
+    def get(self,request):
+        return render(request,"resizer_index.html")
+    
+    def validate_extension(image):
+        ext=str(image).split('.')
+        if ext[-1].lower() not in ['png','jpeg','gfg','jpg']:
+            return ValidationError(f"unsupported file extension {ext}")
+       
+    
+    def post(self,request):
+        file_path=request.FILES.get('image')
+        
+        self.validate_extension(file_path)
+        height=request.POST.get('height')
+        width=request.POST.get('width')
+        
+        obj=UplodedImage.objects.create(image=file_path)
+        obj.save()
+
+        resized_path=self.resized(obj.image,height,width)
+        
+        if resized_path:
+             obj.resized_image.save(
+                os.path.basename(resized_path),
+                open(resized_path, 'rb')
+            )
+             obj.save()
+             return render(request, "resized_sucess.html", {'filepath': obj.resized_image.url,'oldpath':obj.image.url})
+        return HttpResponse("<h1>Error</h1>")
+    
+ 
+    def resized(self, image_field, height, width):
+          try:
+            original_image_path = image_field.path
+            resized_dir = os.path.join(settings.MEDIA_ROOT, 'resized')
+            os.makedirs(resized_dir, exist_ok=True)
+            resized_image_path = os.path.join(resized_dir, os.path.basename(original_image_path))
+            print(resized_image_path)
+        
+            with Image.open(original_image_path) as img:
+                img_resized = img.resize((int(width), int(height)), Image.Resampling.LANCZOS)
+                img_resized.save(resized_image_path, quality=95, optimize=True)
+            
+            return resized_image_path
+          except Exception as e:
+            print(f"Error resizing image: {e}")
+            return None
 
 
-class Image_Crop_view(View):
-    def get():
-        pass
-   
-    def post():
-        pass
+
+class PngToJpgConverter(View):
+    pass
+
+class JpgToPngConverter(View):
+    pass
+
+class JpgToGifConverter(View):
+    pass
+
+class PdfToJpgConverter(View):
+    pass
+
+class PdfToPngConverter(View):
+    pass
+
+        
+        
 
 
-# Create your views here.
+
+
