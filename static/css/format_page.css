@@ -1,0 +1,26 @@
+
+
+
+.converter-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.dropdown-toggle {
+    cursor: pointer;
+}
+.btn-convert {
+    background-color: #007bff;
+    color: #ffffff;
+}
+.btn-convert:hover {
+    background-color: #0056b3;
+}
+.icon-container {
+    font-size: 4rem;
+    color: #007bff;
+    margin-bottom: 20px;
+}

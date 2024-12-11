@@ -1,0 +1,32 @@
+body {
+    background-color: #f9f9f9;
+}
+
+.upload-section {
+    background-color: #e6efff;
+    border: 2px dashed #007bff;
+    border-radius: 10px;
+    padding: 50px 20px;
+    text-align: center;
+    margin: 20px auto;
+    max-width: 600px;
+}
+
+.upload-section i {
+    font-size: 10px;
+    color: #007bff;
+}
+
+.compression-settings {
+    background-color: #e6efff;
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+.compression-settings h4 {
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+

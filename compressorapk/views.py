@@ -194,22 +194,313 @@ class Image_Resizer_view(View):
 
 
 
-class PngToJpgConverter(View):
-    pass
+class ImageFormatConverter(View):
+    def get(self,request):
+        return render(request,"format_converter.html")
+    
 
-class JpgToPngConverter(View):
-    pass
+    def post(self, request):
+       
+        image_path = request.FILES.get('inputFile')
+        from_format = request.POST.get('fromFormat')
+        to_format = request.POST.get('toFormat')
 
-class JpgToGifConverter(View):
-    pass
+        if not image_path:
+            return HttpResponse("No file uploaded", status=400)
+        
 
-class PdfToJpgConverter(View):
-    pass
+       
+        check_format = str(image_path.name).split('.')[-1].lower()
+        if check_format=='jpeg':
+            check_format='jpg'
+        if check_format != from_format.lower():
+            return HttpResponse("Error: File format does not match the selected 'from' format.", status=400)
+  
+        # Save the uploaded image to the database
+        obj = UplodedImage.objects.create(image=image_path)
+        obj.save()
 
-class PdfToPngConverter(View):
-    pass
+
+        try:
+          
+            input_image_path = obj.image.path  
+            new_image_path = None 
+            # Check if the file exists
+            if not os.path.exists(input_image_path):
+                return HttpResponse("Error: Image file not found.", status=400)
+
+            if str(from_format).lower() in ['jpg','jpeg']:
+                if str(to_format).lower() == 'png':
+                    new_image_path=self.jpg_to_png_converter(input_image_path)
+
+                elif str(to_format).lower() == 'gif':
+                    new_image_path=self.jpg_to_gif_converter(input_image_path)
+
+                elif str(to_format).lower() == 'pdf':
+                    new_image_path=self.jpg_to_pdf_converter(input_image_path)
+
+            elif str(from_format).lower() == 'png':
+                if str(to_format).lower() == 'jpg':
+                   new_image_path=self.png_to_jpg_converter(input_image_path)
+
+                elif str(to_format).lower() == 'gif':
+                    new_image_path=self.png_to_gif_converter(input_image_path)
+
+                  
+                elif str(to_format).lower() == 'pdf':
+                    new_image_path=self.png_to_pdf_converter(input_image_path)
+
+
+            elif str(from_format).lower() == 'pdf':
+                if str(to_format).lower() == 'png':
+                   new_image_path=self.pdf_to_png_converter(input_image_path)
+
+                elif str(to_format).lower() == 'gif':
+                    new_image_path=self.pdf_to_gif_converter(input_image_path)
+
+                    
+                elif str(to_format).lower() == 'jpg':
+                    new_image_path=self.pdf_to_jpg_converter(input_image_path)
+
+            elif str(from_format).lower() == 'gif':
+                if str(to_format).lower() == 'png':
+                   new_image_path= self.gif_to_png_converter(input_image_path)
+
+                elif str(to_format).lower() == 'pdf':
+                    new_image_path=self.gif_to_pdf_converter(input_image_path)
+
+                elif str(to_format).lower() == 'jpg':
+                    new_image_path=self.gif_to_jpg_converter(input_image_path)
+
+            if new_image_path:
+                obj.converted_image.save(os.path.basename(new_image_path), open(new_image_path, 'rb'))
+                obj.save()
+            else:
+                return HttpResponse("Error: Conversion failed or unsupported format combination.", status=400)
+
+
+        except Exception as e:
+            return HttpResponse(f"An error occurred: {str(e)}", status=500)
+
+        return render(request,"show_conveted_image.html",{'converted_image_url':obj.image.url,'download_url':obj.converted_image.url})
+    
+    def jpg_to_png_converter(self, original_image_path):
+        try:
+          
+            converted_folder = './media/converted_folder'  
+         
+            if not os.path.exists(converted_folder):
+                os.makedirs(converted_folder)
+
+            # Get the filename and create the new image path
+            filename = os.path.basename(original_image_path)
+            name, _ = os.path.splitext(filename)
+            new_image_path = os.path.join(converted_folder, f"{name}.png")
+
+            
+            with Image.open(original_image_path) as img:
+                img.save(new_image_path, format='PNG')
+                print(f"Converted {original_image_path} to {new_image_path}")
+                return new_image_path
+
+        except Exception as e:
+            raise Exception(f"Error in jpg_to_png_converter: {str(e)}")
+
+
+
+    def jpg_to_gif_converter(self,original_image_path):
+        try:
+          
+            converted_folder = './media/converted_folder'  
+         
+            if not os.path.exists(converted_folder):
+                os.makedirs(converted_folder)
+
+          
+            filename = os.path.basename(original_image_path)
+            name, _ = os.path.splitext(filename)
+            new_image_path = os.path.join(converted_folder, f"{name}.gif")
+
+            
+            with Image.open(original_image_path) as img:
+                img.save(new_image_path, format='GIF')
+                print(f"Converted {original_image_path} to {new_image_path}")
+                return new_image_path
+
+        except Exception as e:
+            raise Exception(f"Error in jpg_to_gif_converter: {str(e)}")
+
+
+    def jpg_to_pdf_converter(self,original_image_path):
+        try:
+          
+            converted_folder = './media/converted_folder'  
+         
+            if not os.path.exists(converted_folder):
+                os.makedirs(converted_folder)
+
+            # Get the filename and create the new image path
+            filename = os.path.basename(original_image_path)
+            name, _ = os.path.splitext(filename)
+            new_image_path = os.path.join(converted_folder, f"{name}.pdf")
+
+            # Open and save the image as PNG
+            with Image.open(original_image_path) as img:
+                img.save(new_image_path, format='PDF')
+                print(f"Converted {original_image_path} to {new_image_path}")
+                return new_image_path
+
+        except Exception as e:
+            raise Exception(f"Error in jpg_to_pdf_converter: {str(e)}")
+
+    
+    
+    
+    def png_to_jpg_converter(self,original_image_path):
+        try:
+          
+            converted_folder = './media/converted_folder'  
+         
+            if not os.path.exists(converted_folder):
+                os.makedirs(converted_folder)
+
+           
+            filename = os.path.basename(original_image_path)
+            name, _ = os.path.splitext(filename)
+            new_image_path = os.path.join(converted_folder, f"{name}.jpg")
+
+           
+            with Image.open(original_image_path) as img:
+                img.save(new_image_path, format='JPG')
+                print(f"Converted {original_image_path} to {new_image_path}")
+                return new_image_path
+
+        except Exception as e:
+            raise Exception(f"Error in png_to_jpg_converter: {str(e)}")
+
+
+    def png_to_gif_converter(self,original_image_path):
+        try:
+          
+            converted_folder = './media/converted_folder'  
+         
+            if not os.path.exists(converted_folder):
+                os.makedirs(converted_folder)
+
+          
+            filename = os.path.basename(original_image_path)
+            name, _ = os.path.splitext(filename)
+            new_image_path = os.path.join(converted_folder, f"{name}.gif")
+
+    
+            with Image.open(original_image_path) as img:
+                img.save(new_image_path, format='GIF')
+                print(f"Converted {original_image_path} to {new_image_path}")
+                return new_image_path
+
+        except Exception as e:
+            raise Exception(f"Error in png_to_gif_converter: {str(e)}")
+
+
+    def png_to_pdf_converter(self,original_image_path):
+        try:
+          
+            converted_folder = './media/converted_folder'  
+         
+            if not os.path.exists(converted_folder):
+                os.makedirs(converted_folder)
+
+            filename = os.path.basename(original_image_path)
+            name, _ = os.path.splitext(filename)
+            new_image_path = os.path.join(converted_folder, f"{name}.pdf")
+
+            with Image.open(original_image_path) as img:
+                img.save(new_image_path, format='PDF')
+                print(f"Converted {original_image_path} to {new_image_path}")
+                return new_image_path
+
+        except Exception as e:
+            raise Exception(f"Error in png_to_pdf_converter: {str(e)}")
+
+    
+    
+    
+    def pdf_to_jpg_converter(self,original_image_path):
+        try:
+          
+            converted_folder = './media/converted_folder'  
+         
+            if not os.path.exists(converted_folder):
+                os.makedirs(converted_folder)
+
+           
+            filename = os.path.basename(original_image_path)
+            name, _ = os.path.splitext(filename)
+            new_image_path = os.path.join(converted_folder, f"{name}.jpg")
 
         
+            with Image.open(original_image_path) as img:
+                img.save(new_image_path, format='JPG')
+                print(f"Converted {original_image_path} to {new_image_path}")
+                return new_image_path
+
+        except Exception as e:
+            raise Exception(f"Error in pdf_to_jpg_converter: {str(e)}")
+
+
+    def pdf_to_gif_converter(self,original_image_path):
+        try:
+          
+            converted_folder = './media/converted_folder'  
+         
+            if not os.path.exists(converted_folder):
+                os.makedirs(converted_folder)
+
+           
+            filename = os.path.basename(original_image_path)
+            name, _ = os.path.splitext(filename)
+            new_image_path = os.path.join(converted_folder, f"{name}.gif")
+
+            # Open and save the image as PNG
+            with Image.open(original_image_path) as img:
+                img.save(new_image_path, format='GIF')
+                print(f"Converted {original_image_path} to {new_image_path}")
+                return new_image_path
+
+        except Exception as e:
+            raise Exception(f"Error in pdf_to_gif_converter: {str(e)}")
+
+
+    def pdf_to_png_converter(self,original_image_path):
+        try:
+          
+            converted_folder = './media/converted_folder'  
+         
+            if not os.path.exists(converted_folder):
+                os.makedirs(converted_folder)
+
+           
+            filename = os.path.basename(original_image_path)
+            name, _ = os.path.splitext(filename)
+            new_image_path = os.path.join(converted_folder, f"{name}.png")
+
+            with Image.open(original_image_path) as img:
+                img.save(new_image_path, format='PNG')
+                print(f"Converted {original_image_path} to {new_image_path}")
+                return new_image_path
+
+        except Exception as e:
+            raise Exception(f"Error in pdf_to_png_converter: {str(e)}")
+
+
+
+
+    
+
+
+
+
+   
         
 
 

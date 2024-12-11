@@ -1,7 +1,8 @@
 {% extends "masterpage.html" %}
-
+{% load static %}
 {% block 'compress' %}
 <!-- Image Upload Section -->
+<link rel="stylesheet" href="{% static 'css/index_page.css' %}">
 <div class="upload-section">
     <form id="uploadForm" action="{% url 'upload' %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
