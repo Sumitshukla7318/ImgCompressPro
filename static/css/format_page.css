@@ -1,26 +1,90 @@
-
-
-
 .converter-container {
     max-width: 600px;
     margin: 50px auto;
-    padding: 20px;
-    background: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    border-radius: 12px;
+    background: linear-gradient(145deg, #ffffff, #e0e0e0);
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2), -5px -5px 15px rgba(255, 255, 255, 0.7);
+    text-align: center;
 }
-.dropdown-toggle {
-    cursor: pointer;
-}
-.btn-convert {
-    background-color: #007bff;
-    color: #ffffff;
-}
-.btn-convert:hover {
-    background-color: #0056b3;
-}
+
+/* Icon Styling */
 .icon-container {
-    font-size: 4rem;
-    color: #007bff;
-    margin-bottom: 20px;
+    background-color: #4a90e2;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 20px;
+}
+
+.icon-container i {
+    color: #fff;
+    font-size: 30px;
+}
+
+/* Title */
+h2 {
+    font-size: 28px;
+    font-weight: bold;
+    color: #4a4a4a;
+    margin-bottom: 30px;
+}
+
+/* Form Styling */
+.form-group label {
+    font-size: 14px;
+    color: #333;
+    font-weight: bold;
+}
+
+.form-control, .form-control-file, .btn-convert {
+    border-radius: 6px;
+    font-size: 14px;
+    padding: 10px 15px;
+}
+
+.form-control {
+    background-color: #f7f7f7;
+    border: 1px solid #ccc;
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #4a90e2;
+    box-shadow: 0 0 5px rgba(74, 144, 226, 0.3);
+}
+
+/* Buttons */
+.btn-convert {
+    background: linear-gradient(145deg, #4a90e2, #357abf);
+    border: none;
+    color: white;
+    font-weight: bold;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1), -5px -5px 15px rgba(255, 255, 255, 0.4);
+    transition: all 0.3s ease-in-out;
+}
+
+.btn-convert:hover {
+    background: linear-gradient(145deg, #357abf, #4a90e2);
+    box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.2), -5px -5px 20px rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .converter-container {
+        padding: 20px;
+    }
+
+    h2 {
+        font-size: 24px;
+    }
+
+    .btn-convert {
+        font-size: 16px;
+    }
 }

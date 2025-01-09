@@ -1,0 +1,112 @@
+{% extends "masterpage.html" %}
+
+{% block inhance_sucess %}
+<style>
+    /* General body styling */
+    body {
+        font-family: 'Arial', sans-serif;
+        color: #333;
+        margin: 20px;
+        background: #f9f9f9;
+    }
+
+    /* Container for the images */
+    .image-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 30px;
+        margin-top: 30px;
+    }
+
+    /* Individual image box */
+    .image-box {
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        text-align: center;
+        padding: 15px;
+        transition: transform 0.3s ease;
+        width: 300px;
+    }
+
+    .image-box:hover {
+        transform: scale(1.05);
+    }
+
+    /* Image styling */
+    .image-box img {
+        max-width: 100%;
+        border-radius: 8px;
+    }
+
+    .image-box h3 {
+        margin: 10px 0 5px;
+        font-size: 1.2rem;
+        color: #555;
+    }
+
+    /* Download button styling */
+    .download-btn {
+        display: inline-block;
+        margin: 30px auto;
+        padding: 12px 25px;
+        background: linear-gradient(90deg, #6A11CB, #2575FC);
+        color: #fff;
+        font-size: 16px;
+        font-weight: bold;
+        text-decoration: none;
+        border-radius: 25px;
+        transition: background 0.3s ease, transform 0.2s ease;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .download-btn:hover {
+        background: linear-gradient(90deg, #2575FC, #6A11CB);
+        transform: translateY(-3px);
+    }
+
+    .download-btn:active {
+        transform: translateY(1px);
+    }
+
+    /* Responsive styling for mobile devices */
+    @media screen and (max-width: 768px) {
+        .image-container {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="content">
+    <h1 style="text-align: center; font-size: 2rem; color: #444; margin-bottom: 20px;">
+        Enhanced Image Successfully Created!
+    </h1>
+
+    {% if original_image and enhanced_image %}
+    <div class="image-container">
+        <!-- Original Image -->
+        <div class="image-box">
+            <h3>Original Image</h3>
+            <img src="data:image/jpeg;base64,{{ original_image }}" alt="Original Image">
+        </div>
+
+        <!-- Enhanced Image -->
+        <div class="image-box">
+            <h3>Enhanced Image</h3>
+            <img src="data:image/jpeg;base64,{{ enhanced_image }}" alt="Enhanced Image">
+        </div>
+    </div>
+
+    <!-- Download Button -->
+    <a href="data:image/{{ image_format }};base64,{{ enhanced_image }}" 
+       download="enhanced_image.{{ image_format }}" 
+       class="download-btn">
+        Download Enhanced Image
+    </a>
+    {% endif %}
+</div>
+{% endblock inhance_sucess %}

@@ -39,8 +39,15 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'change_format' %}"><i class="fas fa-exchange-alt"></i> FormatFusion</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fas fa-ellipsis-h"></i> More</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            <i class="fas fa-ellipsis-h"></i> More
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url "enhance" %}">Image Enhancer</a></li>
+                            <li><a class="dropdown-item" href="#">Coming Soon</a></li>
+                        </ul>
                     </li>
                 </ul>
             </div>
@@ -53,6 +60,8 @@
     {% block 'resizer' %}{% endblock 'resizer' %}
     {% block 'formatconverter' %}{% endblock 'formatconverter' %}
     {% block show_converted_image %}{% endblock show_converted_image %}
+    {% block 'enhancer' %}{% endblock 'enhancer' %}
+    {% block inhance_sucess %}{% endblock inhance_sucess %}
     
 
 

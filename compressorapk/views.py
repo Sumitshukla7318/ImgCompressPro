@@ -6,6 +6,12 @@ from .models import UplodedImage
 import os
 from django.conf import settings
 from django.core.exceptions import ValidationError
+import time
+from pdf2image import convert_from_path
+from datetime import datetime
+from PIL import Image, ImageEnhance
+import io
+import base64
 
 class Image_compressor_view(View):
     def get(self,request):
@@ -147,7 +153,7 @@ class Image_Resizer_view(View):
     def get(self,request):
         return render(request,"resizer_index.html")
     
-    def validate_extension(image):
+    def validate_extension(self,image):
         ext=str(image).split('.')
         if ext[-1].lower() not in ['png','jpeg','gfg','jpg']:
             return ValidationError(f"unsupported file extension {ext}")
@@ -425,29 +431,44 @@ class ImageFormatConverter(View):
     
     
     
-    def pdf_to_jpg_converter(self,original_image_path):
+    def pdf_to_jpg_converter(self, original_pdf_path):
         try:
-          
-            converted_folder = './media/converted_folder'  
-         
+            # Define the output directory
+            converted_folder = './media/converted_folder'
+            
+            # Create output folder if it doesn't exist
             if not os.path.exists(converted_folder):
                 os.makedirs(converted_folder)
-
-           
-            filename = os.path.basename(original_image_path)
+    
+            # Extract the base name and file name without the extension
+            filename = os.path.basename(original_pdf_path)
             name, _ = os.path.splitext(filename)
-            new_image_path = os.path.join(converted_folder, f"{name}.jpg")
-
+    
+            # Open the PDF file
+            doc = fitz.open(original_pdf_path)
+    
+            image_paths = []
+            
+            # Iterate through each page of the PDF
+            for i in range(doc.page_count):
+                # Get the page
+                page = doc.load_page(i)
+    
+                # Convert the page to a pixmap (an image)
+                pix = page.get_pixmap()
+    
+                # Define the new image path
+                new_image_path = os.path.join(converted_folder, f"{name}_page_{i + 1}.jpg")
+    
+                # Save the pixmap as a JPG file
+                pix.save(new_image_path)
+                image_paths.append(new_image_path)
+                print(f"Saved page {i + 1} to {new_image_path}")
         
-            with Image.open(original_image_path) as img:
-                img.save(new_image_path, format='JPG')
-                print(f"Converted {original_image_path} to {new_image_path}")
-                return new_image_path
-
+            return image_paths
         except Exception as e:
-            raise Exception(f"Error in pdf_to_jpg_converter: {str(e)}")
-
-
+             raise Exception(f"Error in pdf_to_jpg_converter: {str(e)}")
+    
     def pdf_to_gif_converter(self,original_image_path):
         try:
           
@@ -491,6 +512,85 @@ class ImageFormatConverter(View):
 
         except Exception as e:
             raise Exception(f"Error in pdf_to_png_converter: {str(e)}")
+
+
+class OldImagesCleaner(View):
+    def get(self,request):
+        images=UplodedImage.objects.all()
+        current=time.time()
+        for img in images:            
+            upload_time=img.uploaded_at.timestamp()
+            print(img.uploaded_at)
+            if (current-upload_time)>=3600:
+
+                if img.image and os.path.exists(img.image.path):
+                    os.remove(img.image.path)
+                
+                if img.compressed_image and os.path.exists(img.compressed_image.path):
+                    os.remove(img.compressed_image.path)
+                
+                if img.converted_image and os.path.exists(img.converted_image.path):
+                    os.remove(img.converted_image.path)
+                
+                if img.resized_image and os.path.exists(img.resized_image.path):
+                    os.remove(img.resized_image.path)
+                
+                img.delete()
+                
+        return HttpResponse("done")
+
+
+
+
+class ImageEnhancerView(View):
+    def get(self, request):
+        return render(request, "imageenhancer.html")
+
+    def post(self, request):
+        img = request.FILES.get('image')
+        if not img:
+            return HttpResponse("No image uploaded.", status=400)
+
+        # Open the uploaded image
+        try:
+            original_image = Image.open(img)
+        except Exception as e:
+            return HttpResponse(f"Error processing image: {e}", status=400)
+
+        # Convert to RGB if the image is in RGBA or P mode
+        if original_image.mode in ("RGBA", "P"):
+            original_image = original_image.convert("RGB")
+
+        # increase brightness and sharpness)
+        enhancer = ImageEnhance.Brightness(original_image)
+        enhanced_image = enhancer.enhance(1.5)  # Brightness factor (1.0 = original)
+
+        enhancer = ImageEnhance.Sharpness(enhanced_image)
+        enhanced_image = enhancer.enhance(2.0)  # Sharpness factor
+
+        # Convert images to base64 to render in the template
+        def image_to_base64(image):
+            buffer = io.BytesIO()
+            image_format = image.format or 'JPEG'
+            image.save(buffer, format=image_format)
+            buffer.seek(0)
+            return base64.b64encode(buffer.getvalue()).decode()
+
+        original_image_base64 = image_to_base64(original_image)
+        enhanced_image_base64 = image_to_base64(enhanced_image)
+
+        # Save enhanced image to a BytesIO buffer for download
+        buffer = io.BytesIO()
+        enhanced_image.save(buffer, format=original_image.format or 'JPEG')
+        buffer.seek(0)
+
+        print("done")
+        return render(request, "enhanced_sucess.html", {
+            'original_image': original_image_base64,
+            'enhanced_image': enhanced_image_base64,
+            'download_file': buffer.getvalue(),
+            'image_format': (original_image.format or 'JPEG').lower()
+        })
 
 
 

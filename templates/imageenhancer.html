@@ -1,0 +1,58 @@
+{% extends "masterpage.html" %}
+
+{% block 'enhancer' %}
+
+<div class="container my-5">
+    <div class="row">
+        <!-- Image Upload and Enhancing Section -->
+        <div class="col-md-8 mx-auto">
+            <div class="card shadow-lg border-0">
+                <div class="card-body">
+                    <h3 class="text-center text-primary mb-4">
+                        <i class="fas fa-image"></i> Image Enhancer
+                    </h3>
+                    <p class="text-center text-muted mb-4">
+                        Transform your photos with AI-powered enhancement tools! Upload and enhance images effortlessly.
+                    </p>
+
+                    <form action="{% url 'enhance' %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <!-- Image Upload -->
+                        <div class="mb-3 text-center">
+                            <label for="imageInput" class="form-label">
+                                <i class="fas fa-upload fa-2x text-success"></i>
+                                <h5 class="mt-2">Upload Image</h5>
+                            </label>
+                            <input type="file" class="form-control" id="imageInput" name="image" accept="image/*" required>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-magic"></i> Enhance Image
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tips Section -->
+    <div class="row mt-5">
+        <div class="col-md-8 mx-auto">
+            <div class="card bg-light shadow-sm">
+                <div class="card-body">
+                    <h5 class="text-primary"><i class="fas fa-lightbulb"></i> Tips for Best Results:</h5>
+                    <ul class="list-unstyled text-muted">
+                        <li><i class="fas fa-check-circle text-success"></i> Upload images with good lighting and focus.</li>
+                        <li><i class="fas fa-check-circle text-success"></i> Choose enhancements that match your goal.</li>
+                        <li><i class="fas fa-check-circle text-success"></i> Use high-resolution images for sharper results.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock 'enhancer' %}

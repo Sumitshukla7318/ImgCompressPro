@@ -1,50 +1,50 @@
 {% extends "masterpage.html" %}
 
 {% block 'sucess' %}
-<div class="container text-center mt-5">
+<div class="container text-center mt-3">
     <!-- Success Card -->
-    <div class="card shadow-lg border-0 rounded">
+    <div class="card shadow-lg border-0 rounded-3">
         <div class="card-body">
             <!-- Success Message -->
-            <h1 class="text-success">🎉 Image Compressed Successfully!</h1>
-            <p class="text-muted">Below you can see both the original and compressed images, and download the compressed version.</p>
+            <h1 class="text-success mb-3"><i class="fas fa-check-circle"></i> Image Compressed Successfully!</h1>
+            <p class="text-muted">Below you can compare the original and compressed images. Download the compressed version for your use.</p>
             
             <!-- Image Comparison Section -->
             <div class="row justify-content-center mt-4">
                 <!-- Original Image -->
-                <div class="col-md-5">
-                    <div class="card shadow-sm border-0">
-                        <div class="card-header bg-warning text-white">
-                            <strong>Original Image</strong>
+                <div class="col-md-5 mb-3">
+                    <div class="card shadow-sm border-0 rounded-3 h-100">
+                        <div class="card-header bg-warning text-white rounded-top">
+                            <h5 class="mb-0"><i class="fas fa-image"></i> Original Image</h5>
                         </div>
-                        <div class="card-body p-2">
-                            <img src="{{oldpath}}" alt="Original Image" class="img-fluid rounded" 
-                                style="max-width: 100%; object-fit: cover;">
+                        <div class="card-body p-2 d-flex justify-content-center align-items-center">
+                            <img src="{{ oldpath }}" alt="Original Image" class="img-fluid rounded" 
+                                style="max-height: 250px; object-fit: contain;">
                         </div>
                     </div>
                 </div>
 
                 <!-- Compressed Image -->
-                <div class="col-md-5">
-                    <div class="card shadow-sm border-0">
-                        <div class="card-header bg-success text-white">
-                            <strong>Compressed Image</strong>
+                <div class="col-md-5 mb-3">
+                    <div class="card shadow-sm border-0 rounded-3 h-100">
+                        <div class="card-header bg-success text-white rounded-top">
+                            <h5 class="mb-0"><i class="fas fa-compress"></i> Compressed Image</h5>
                         </div>
-                        <div class="card-body p-2">
+                        <div class="card-body p-2 d-flex justify-content-center align-items-center">
                             <img src="{{ filepath }}" alt="Compressed Image" class="img-fluid rounded" 
-                                style="max-width: 100%; object-fit: cover;">
+                                style="max-height: 250px; object-fit: contain;">
                         </div>
                     </div>
                 </div>
             </div>
             
             <!-- Action Buttons -->
-            <div class="mt-4">
-                <a href="{{ filepath }}" class="btn btn-success btn-lg shadow" download>
-                    <i class="fas fa-download"></i> Download Compressed Image
+            <div class="mt-4 d-flex justify-content-center gap-3">
+                <a href="{{ filepath }}" class="btn btn-success btn-lg shadow px-4" download>
+                    <i class="fas fa-download"></i> Download Compressed
                 </a>
-                <a href="/" class="btn btn-secondary btn-lg shadow">
-                    <i class="fas fa-upload"></i> Upload Another Image
+                <a href="/" class="btn btn-outline-primary btn-lg shadow px-4">
+                    <i class="fas fa-upload"></i> Upload Another
                 </a>
             </div>
         </div>
